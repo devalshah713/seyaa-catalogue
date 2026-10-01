@@ -62,10 +62,8 @@ serve it with no build step — re-run `site.py` and commit after any data chang
 
 `public/` is the deploy root (`index.html` + `_headers`).
 
-- **Workers (recommended):** `npx wrangler deploy` — uses `wrangler.jsonc` (static assets only,
-  no Worker script). Or connect this repo under Workers & Pages → Create → Import a repository,
-  with build command empty and deploy command `npx wrangler deploy`.
-- **Pages:** Connect to Git → framework preset *None*, build command empty, output directory `public`.
+- **Pages (live at seyaa-catalogue.pages.dev):** connected to Git; `wrangler.jsonc` sets
+  `pages_build_output_dir` to `public`, so no build command is needed.
   Or `npx wrangler pages deploy public --project-name seyaa-catalogue`.
 
 ### PDF structure
