@@ -1,0 +1,32 @@
+{
+  "name": "seyaa-catalogue",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Seyaa Jewels Inc. trade catalogue 2026 \u2014 lab grown diamond jewellery",
+  "scripts": {
+    "catalogue": "node scripts/build-catalogue.mjs",
+    "dev": "next dev",
+    "build": "node scripts/build-catalogue.mjs && next build",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "15.5.22",
+    "react": "19.0.0",
+    "react-dom": "19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "22.10.7",
+    "@types/react": "19.0.7",
+    "@types/react-dom": "19.0.3",
+    "autoprefixer": "10.4.20",
+    "postcss": "8.5.21",
+    "tailwindcss": "3.4.17",
+    "typescript": "5.7.3"
+  },
+  "overrides": {
+    "postcss": "8.5.21"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

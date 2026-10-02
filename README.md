@@ -47,35 +47,64 @@ and `imgW`/`imgY` (Drive file IDs parsed out of the share URLs).
 - `catalogue_data.json` — PDF dataset (Image 1 only)
 - `site_data.json` — website dataset (Images 1–4, 266 IDs total)
 
-## Build
+## Website
 
-```bash
-python3 build.py   # → Seyaa_Jewels_Trade_Catalogue_2026.pdf  (reportlab, 56 pages A4)
-python3 site.py    # → public/index.html + index.html          (single self-contained file)
+A Next.js static site with the same design system as `devalshah713/seyaa-corporate`
+(brand kit palette `#FFFFFF` / `#DD611C` / `#1C2120`, Montserrat + Allura, the horse mark,
+white theme so the packshots dissolve into their tiles), filled with this catalogue's data.
+
+```
+site_data.json ──► scripts/build-catalogue.mjs ──► data/products.json + public/_redirects ──► next build ──► out/
 ```
 
-Both scripts resolve paths relative to the repo. `build.py` needs `pip install reportlab pillow`;
-`site.py` needs only the standard library. Both `index.html` copies are committed so Cloudflare can
-serve it with no build step — re-run `site.py` and commit after any data change.
+```bash
+npm ci
+npm run dev      # local preview
+npm run build    # → out/  (static export, every page prerendered)
+```
 
-## Deploy (Cloudflare)
+- **Pages:** `/` home · `/collection` (category → shelf → shape filters, search by name or SKU)
+  · `/piece/<slug>` (gallery, White/Yellow toggle, full spec) · `/company` · `/guide` · `/enquiry`.
+- **Categories:** Bracelets (Round Tennis, All Mix Fancy) · Necklaces (Straight Line Tennis,
+  Graduated Tennis) · Stud Earrings (Basket, Martini) · Rings (Eternity Bands). Mapped in
+  `SHELVES` in `scripts/build-catalogue.mjs`.
+- **Permanent links:** `/piece/<design id>` and `/piece/<SKU>` (e.g. `/piece/br-sl-02-w`)
+  307-redirect to the current slug via the generated `public/_redirects`.
+- **Prices:** none published — every piece reads "Price on request".
+- **Clarity:** shown as the data states it, **VS–SI**. (The corporate site overrides its sheet
+  to VVS–VS; that override is deliberately *not* carried over.)
+- **Contact:** `src/lib/contact.ts` — Rahul Shah, +1 917 801 6060, seyaajewels@gmail.com,
+  overridable with `NEXT_PUBLIC_WHATSAPP_NUMBER` / `NEXT_PUBLIC_SALES_EMAIL`.
+- **Fonts:** self-hosted from `fonts/`, subset to Latin WOFF2 in `src/fonts/` — the build
+  needs no network access.
+- The build prints source-data problems (e.g. `16RG` titled 4 ct but weighing 5.3 ct; SKU
+  `123 RGW` contains a space). They are reported, not corrected.
 
-The site is `index.html` + `_headers`, present in both `public/` and the repo root.
+## PDF
 
-- **Pages:** https://seyaa-catalogue.pages.dev, connected to Git with no build command.
-  `site.py` writes `index.html` to both `public/` and the repo root, so the site is served
-  whether the build output directory is `public` or empty. Commit both copies.
+```bash
+pip install reportlab pillow
+python3 build.py   # → Seyaa_Jewels_Trade_Catalogue_2026.pdf  (56 pages A4)
+```
+
+## Deploy (Cloudflare Pages)
+
+Settings → Builds & deployments:
+
+| Setting | Value |
+|---|---|
+| Framework preset | Next.js (Static HTML Export) |
+| Build command | `npm run build` |
+| Build output directory | `out` |
+| Environment variable | `NODE_VERSION` = `22` (optional — `.nvmrc` already says 22) |
+
+Live at https://seyaa-catalogue.pages.dev (override the canonical origin with
+`NEXT_PUBLIC_SITE_URL` if a custom domain is added).
 
 ### PDF structure
 Cover → About → then per collection: a section opener (blurb + full spec table) followed by
 one page per variant (White and Yellow plates side by side + six-cell spec strip) → Contact
 page with QR. Image frames fall back to a labelled placeholder when a file is missing.
-
-### Website structure
-Dark single-page site: fixed nav, hero, about + house standards, seven collection sections
-with a responsive card grid and a collapsible spec table each, then the contact block.
-Clicking a card opens a lightbox with both metals, angle thumbnails (Images 2–4) and full
-specs. Vanilla JS, data embedded as JSON, logo and QR inlined as base64.
 
 ## The image problem (read this first)
 
@@ -100,5 +129,5 @@ Consequences:
 ## Open items
 
 - Confirm which angle suffix (`-A` … `-E`) is the hero shot — never answered.
-- Host the HTML for a shareable link — Cloudflare config is in place (see Deploy).
+- Product photos load from Google Drive: the files must be shared "Anyone with the link".
 - Optional: generate the PDF from the website data so both stay in sync from one source.
