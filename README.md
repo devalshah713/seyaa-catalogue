@@ -55,12 +55,12 @@ python3 site.py    # → public/index.html + index.html          (single self-co
 ```
 
 Both scripts resolve paths relative to the repo. `build.py` needs `pip install reportlab pillow`;
-`site.py` needs only the standard library. both `index.html` copies are committed so Cloudflare can
+`site.py` needs only the standard library. Both `index.html` copies are committed so Cloudflare can
 serve it with no build step — re-run `site.py` and commit after any data change.
 
 ## Deploy (Cloudflare)
 
-`public/` is the deploy root (`index.html` + `_headers`).
+The site is `index.html` + `_headers`, present in both `public/` and the repo root.
 
 - **Pages:** https://seyaa-catalogue.pages.dev, connected to Git with no build command.
   `site.py` writes `index.html` to both `public/` and the repo root, so the site is served
