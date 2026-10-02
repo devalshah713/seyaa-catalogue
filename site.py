@@ -383,7 +383,9 @@ out = (HTML.replace('__EMBLEM__', EMBLEM)
            .replace('__JSON__', JSON)
            .replace('__WA__', WA))
 
+# Written to both public/ and the repo root so Cloudflare Pages serves the site
+# whether its build output directory is set to `public` or left empty.
 os.makedirs(os.path.join(ROOT, 'public'), exist_ok=True)
-path = os.path.join(ROOT, 'public', 'index.html')
-open(path, 'w', encoding='utf-8').write(out)
-print('written', path, len(out), 'bytes')
+for path in (os.path.join(ROOT, 'public', 'index.html'), os.path.join(ROOT, 'index.html')):
+    open(path, 'w', encoding='utf-8').write(out)
+    print('written', path, len(out), 'bytes')

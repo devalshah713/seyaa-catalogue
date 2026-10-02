@@ -51,20 +51,20 @@ and `imgW`/`imgY` (Drive file IDs parsed out of the share URLs).
 
 ```bash
 python3 build.py   # → Seyaa_Jewels_Trade_Catalogue_2026.pdf  (reportlab, 56 pages A4)
-python3 site.py    # → public/index.html                       (single self-contained file)
+python3 site.py    # → public/index.html + index.html          (single self-contained file)
 ```
 
 Both scripts resolve paths relative to the repo. `build.py` needs `pip install reportlab pillow`;
-`site.py` needs only the standard library. `public/index.html` is committed so Cloudflare can
+`site.py` needs only the standard library. both `index.html` copies are committed so Cloudflare can
 serve it with no build step — re-run `site.py` and commit after any data change.
 
 ## Deploy (Cloudflare)
 
 `public/` is the deploy root (`index.html` + `_headers`).
 
-- **Pages (live at seyaa-catalogue.pages.dev):** connected to Git; `wrangler.jsonc` sets
-  `pages_build_output_dir` to `public`, so no build command is needed.
-  Or `npx wrangler pages deploy public --project-name seyaa-catalogue`.
+- **Pages:** https://seyaa-catalogue.pages.dev, connected to Git with no build command.
+  `site.py` writes `index.html` to both `public/` and the repo root, so the site is served
+  whether the build output directory is `public` or empty. Commit both copies.
 
 ### PDF structure
 Cover → About → then per collection: a section opener (blurb + full spec table) followed by
